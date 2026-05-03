@@ -1,5 +1,6 @@
 
 require ("dotenv").config();
+require("./jobs/cron.js");
 
 const app = require("./app");
 

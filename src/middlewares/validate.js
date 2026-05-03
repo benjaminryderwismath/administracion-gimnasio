@@ -1,5 +1,4 @@
 
-
 const { ZodError } = require("zod");
 const AppError = require("../utils/AppError");
 
@@ -9,7 +8,7 @@ const validateSchema = (schema) => (req, res, next) => {
         next();
     } catch (error) {
         if (error instanceof ZodError) {
-            const messages = error.errors.map(e => e.message);
+            const messages = error.issues.map(e => e.message); // 🔥 cambio acá
             return next(new AppError(messages.join(", "), 400));
         }
         next(error);

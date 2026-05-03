@@ -12,7 +12,7 @@ const updateSchema = z.object({
 }).strict().refine(
 (data) => Object.keys(data).length > 0,
 { message:"Debe enviar al menos un campo para actualizar" }
-);
+).strict()
 
 
 module.exports = { profesorSchema, updateSchema };
