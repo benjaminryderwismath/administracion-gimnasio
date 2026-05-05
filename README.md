@@ -1,4 +1,5 @@
 
+
 # API de Gestión de Gimnasio
 
 API REST para la administración completa de un gimnasio real, con automatización de pagos, renovaciones y notificaciones.
@@ -104,6 +105,25 @@ API REST para la administración completa de un gimnasio real, con automatizaci�
 
 ---
 
+## 🧪 Flujo de ejemplo
+
+1. Login
+2. Crear alumno
+3. Crear inscripción
+4. Registrar pago → se renueva automáticamente
+
+POST /pagos
+
+{
+  "inscripcion_id": 1,
+  "monto": 15000,
+  "metodo_pago": "efectivo"
+}
+
+> ⚠️ Nota: El servidor puede tardar unos segundos en responder si está en reposo (Render free tier).
+
+---
+
 ## 🏗 Arquitectura
 
 src/
@@ -113,8 +133,8 @@ src/
 ├── middlewares/    → Auth y validación
 ├── routes/         → Definición de endpoints
 ├── services/       → Lógica de negocio
-|── utils/          → Helpers
-└──  validators/     → Schemas de Zod
+├── utils/          → Helpers
+└── validators/     → Schemas de Zod
 
 ---
 
@@ -170,3 +190,18 @@ Job automático que corre diariamente:
 **Benjamin Ryder Wismath**  
 Backend Developer  
 [GitHub](https://github.com/benjaminryderwismath) | [LinkedIn](https://www.linkedin.com/in/benjamin-ryder-wismath-95b631291)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

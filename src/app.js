@@ -5,6 +5,11 @@ const pagosRoutes = require("./routes/pagos.routes");
 const reportesRoutes = require("./routes/reportes.routes");
 
 app.use(express.json());
+
+app.get("/", (req, res) => {
+res.send("Gym Management API running 🚀");
+});
+
 app.use("/auth", require("./routes/auth.routes"));
 app.use("/profesores", require("./routes/profesores.routes"));
 app.use("/alumnos", require("./routes/alumno.routes"));
