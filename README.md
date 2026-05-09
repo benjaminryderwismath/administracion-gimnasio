@@ -1,93 +1,220 @@
 
+# Gym Management API
 
-# API de Gestión de Gimnasio
+REST API para la administración de un gimnasio. Permite gestionar alumnos, profesores, inscripciones y pagos, con autenticación JWT y notificaciones automáticas por email y WhatsApp.
 
-API REST para la administración completa de un gimnasio real, con automatización de pagos, renovaciones y notificaciones.
-
-🔗 **Deploy:** https://administracion-gimnasio-7f7r.onrender.com
-
----
-
-## 🚀 Características principales
-
-- **Gestión completa de alumnos, profesores e inscripciones**
-- **Sistema de pagos inteligente:**
-  - Cálculo automático de comisiones por profesor
-  - Renovación automática de suscripciones
-  - Separación de ganancias (gimnasio vs profesor)
-- **Sistema de notificaciones automáticas:**
-  - Recordatorios 5 días antes del vencimiento
-  - Envío por WhatsApp (Twilio) y Email (Nodemailer)
-  - Job automático diario con node-cron
-- **Reportes y métricas:**
-  - Facturación total del gimnasio
-  - Facturación por profesor
-  - Métricas mensuales
-- **Autenticación completa con JWT** (access + refresh tokens)
-- **Validación de datos con Zod**
-- **Manejo centralizado de errores**
+**Base URL:** `https://administracion-gimnasio-7f7r.onrender.com`
 
 ---
 
-## 🛠 Stack Tecnológico
+## Tecnologías
 
-- Node.js + Express
-- PostgreSQL
-- JWT (access + refresh tokens)
-- Zod (validación)
-- Node-cron (tareas programadas)
-- Nodemailer (emails)
-- Twilio (SMS/WhatsApp)
+- **Node.js** + **Express 5**
+- **PostgreSQL** con `pg` (Pool)
+- **JWT** — access token (15min) + refresh token (7d) con rotación
+- **Zod** — validación de schemas
+- **bcryptjs** — hashing de passwords
+- **node-cron** — job diario de recordatorios
+- **Nodemailer** + **Twilio** — notificaciones por email y WhatsApp
+- **Jest** + **Supertest** — tests unitarios e integración
 
 ---
 
-## 📋 Endpoints
+## Estructura del proyecto
+
+```
+src/
+├── config/         # Conexión a PostgreSQL
+├── controllers/    # Lógica de request/response
+├── middlewares/    # Auth, validación de schemas e IDs
+├── routes/         # Definición de endpoints
+├── services/       # Lógica de negocio y queries
+├── validators/     # Schemas Zod
+├── jobs/           # Cron job de recordatorios
+└── utils/          # AppError, JWT helpers, bcrypt helpers
+tests/              # Tests con Jest + Supertest
+```
+
+---
+
+## Instalación local
+
+```bash
+git clone https://github.com/tu-usuario/gimnasio.git
+cd gimnasio
+npm install
+```
+
+Copiá el archivo de variables de entorno:
+
+```bash
+cp .env.example .env
+```
+
+Completá los valores en `.env` y levantá el servidor:
+
+```bash
+npm run dev
+```
+
+---
+
+## Variables de entorno
+
+```env
+DATABASE_URL=
+JWT_SECRET=
+JWT_REFRESH_SECRET=
+NODE_ENV=development
+
+# Notificaciones
+TWILIO_ACCOUNT_SID=
+TWILIO_AUTH_TOKEN=
+TWILIO_PHONE=
+EMAIL_USER=
+EMAIL_PASS=
+```
+
+---
+
+## Autenticación
+
+Todos los endpoints excepto `/auth/register`, `/auth/login` y `/auth/refresh` requieren un **Bearer token** en el header:
+
+```
+Authorization: Bearer <accessToken>
+```
+
+El access token expira en 15 minutos. Usá `/auth/refresh` para obtener uno nuevo sin volver a loguearte.
+
+---
+
+## Endpoints
 
 ### Auth
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| POST | `/auth/register` | Registro de usuario |
-| POST | `/auth/login` | Login |
-| POST | `/auth/refresh` | Renovar token |
-| POST | `/auth/logout` | Logout |
 
-### Profesores
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| GET | `/profesores` | Listar profesores |
-| POST | `/profesores` | Crear profesor |
-| GET | `/profesores/:id` | Ver profesor |
-| PUT | `/profesores/:id` | Actualizar profesor |
-| DELETE | `/profesores/:id` | Eliminar profesor |
+| Método | Endpoint | Descripción | Auth |
+|--------|----------|-------------|------|
+| POST | `/auth/register` | Registrar usuario | No |
+| POST | `/auth/login` | Iniciar sesión | No |
+| POST | `/auth/refresh` | Renovar access token | No |
+| POST | `/auth/logout` | Cerrar sesión | No |
+
+> `/auth/login` y `/auth/register` tienen rate limiting: máximo 10 intentos cada 15 minutos por IP.
+
+**POST /auth/register**
+```json
+{
+  "nombre": "Benji",
+  "email": "benji@gym.com",
+  "password": "tu_password"
+}
+```
+
+**POST /auth/login**
+```json
+{
+  "email": "benji@gym.com",
+  "password": "tu_password"
+}
+```
+Respuesta:
+```json
+{
+  "accessToken": "eyJ...",
+  "refreshToken": "eyJ..."
+}
+```
+
+**POST /auth/refresh**
+```json
+{
+  "refreshToken": "eyJ..."
+}
+```
+
+**POST /auth/logout**
+```json
+{
+  "refreshToken": "eyJ..."
+}
+```
+
+---
 
 ### Alumnos
+
 | Método | Endpoint | Descripción |
 |--------|----------|-------------|
-| GET | `/alumnos` | Listar alumnos |
+| GET | `/alumnos` | Listar todos los alumnos |
+| GET | `/alumnos/:id` | Obtener un alumno |
 | POST | `/alumnos` | Crear alumno |
-| GET | `/alumnos/:id` | Ver alumno |
 | PUT | `/alumnos/:id` | Actualizar alumno |
 | DELETE | `/alumnos/:id` | Eliminar alumno |
 
-### Inscripciones
+**POST /alumnos**
+```json
+{
+  "nombre": "Juan Pérez",
+  "email": "juan@email.com",
+  "telefono": "+5493512345678"
+}
+```
+
+---
+
+### Profesores
+
 | Método | Endpoint | Descripción |
 |--------|----------|-------------|
-| GET | `/inscripciones` | Listar inscripciones |
-| POST | `/inscripciones` | Crear inscripción |
-| GET | `/inscripciones/:id` | Ver inscripción |
-| PUT | `/inscripciones/:id` | Actualizar inscripción |
-| DELETE | `/inscripciones/:id` | Cancelar inscripción |
+| GET | `/profesores` | Listar todos los profesores |
+| GET | `/profesores/:id` | Obtener un profesor |
+| POST | `/profesores` | Crear profesor |
+| PUT | `/profesores/:id` | Actualizar profesor |
+| DELETE | `/profesores/:id` | Eliminar profesor |
 
-**Tipos de plan:** `mensual`, `trimestral`, `semestral`, `anual`
+**POST /profesores**
+```json
+{
+  "nombre": "Carlos López",
+  "comision": 20
+}
+```
+> `comision` es el porcentaje (0-100) que el profesor recibe por cada pago de sus alumnos.
+
+---
+
+### Inscripciones
+
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| GET | `/inscripciones` | Listar todas las inscripciones |
+| GET | `/inscripciones/:id` | Obtener una inscripción |
+| POST | `/inscripciones` | Crear inscripción |
+| PUT | `/inscripciones/:id` | Actualizar inscripción |
+| DELETE | `/inscripciones/:id` | Eliminar inscripción |
+
+**POST /inscripciones**
+```json
+{
+  "alumno_id": 1,
+  "profesor_id": 2,
+  "tipo": "mensual"
+}
+```
+> `tipo` acepta: `mensual`, `trimestral`, `semestral`, `anual`. `profesor_id` es opcional.
+
+---
 
 ### Pagos
+
 | Método | Endpoint | Descripción |
 |--------|----------|-------------|
-| GET | `/pagos` | Listar pagos |
-| POST | `/pagos` | Registrar pago (renueva inscripción) |
-| GET | `/pagos/resumen` | Resumen de facturación |
+| GET | `/pagos` | Listar todos los pagos |
+| GET | `/pagos/resumen` | Resumen de ingresos totales |
+| POST | `/pagos` | Registrar un pago |
 
-**Ejemplo de pago:**
+**POST /pagos**
 ```json
 {
   "inscripcion_id": 1,
@@ -95,113 +222,39 @@ API REST para la administración completa de un gimnasio real, con automatizaci�
   "metodo_pago": "efectivo"
 }
 ```
+> `metodo_pago` acepta: `efectivo`, `transferencia`, `tarjeta`. Al registrar un pago, el vencimiento de la inscripción se actualiza automáticamente.
+
+---
 
 ### Reportes
+
 | Método | Endpoint | Descripción |
 |--------|----------|-------------|
-| GET | `/reportes/profesores` | Facturación por profesor |
+| GET | `/reportes/profesores` | Ganancias por profesor |
+| GET | `/reportes/profesores/:id` | Ganancias de un profesor específico |
 | GET | `/reportes/mensual` | Métricas mensuales |
-| GET | `/reportes/profesores/:id` | Ganancias de un profesor |
+| GET | `/reportes/mensual?year=2025&month=11` | Métricas de un mes específico |
 
 ---
 
-## 🧪 Flujo de ejemplo
-
-1. Login
-2. Crear alumno
-3. Crear inscripción
-4. Registrar pago → se renueva automáticamente
-
-POST /pagos
-
-{
-  "inscripcion_id": 1,
-  "monto": 15000,
-  "metodo_pago": "efectivo"
-}
-
-> ⚠️ Nota: El servidor puede tardar unos segundos en responder si está en reposo (Render free tier).
-
----
-
-## 🏗 Arquitectura
-
-src/
-├── config/         → Configuración de DB
-├── controllers/    → Lógica de request/response
-├── jobs/           → Tareas programadas (cron)
-├── middlewares/    → Auth y validación
-├── routes/         → Definición de endpoints
-├── services/       → Lógica de negocio
-├── utils/          → Helpers
-└── validators/     → Schemas de Zod
-
----
-
-## 🔧 Instalación Local
+## Tests
 
 ```bash
-git clone https://github.com/benjaminryderwismath/administracion-gimnasio.git
-cd administracion-gimnasio
-npm install
+npm test
 ```
 
-**Crear archivo `.env`:**
+Los tests usan mocks de la DB — no requieren PostgreSQL corriendo.
 
-DATABASE_URL=postgresql://localhost/gimnasio
-JWT_SECRET=tu_secret
-JWT_REFRESH_SECRET=tu_refresh_secret
-NODE_ENV=development
-PORT=3000
-EMAIL_USER=tu_email@gmail.com
-EMAIL_PASS=tu_app_password
-TWILIO_ACCOUNT_SID=tu_sid
-TWILIO_AUTH_TOKEN=tu_token
-TWILIO_PHONE=+1234567890
-
-**Ejecutar:**
-```bash
-npm run dev
+```
+Test Suites: 3 passed
+Tests:       32 passed
 ```
 
 ---
 
-## 🤖 Sistema de Notificaciones
+## Funcionalidades destacadas
 
-Job automático que corre diariamente:
-1. Busca inscripciones que vencen en 5 días
-2. Envía recordatorio por WhatsApp y Email al alumno
-3. Notifica al administrador con lista completa
-
----
-
-## 💡 Lógica de Negocio Destacada
-
-- **Renovación automática:** Al registrar un pago, la inscripción se renueva automáticamente con nueva fecha de inicio y vencimiento
-- **Cálculo de comisiones:** El sistema calcula automáticamente la comisión del profesor (%) y la ganancia del gimnasio
-- **Estados dinámicos:** Las inscripciones actualizan su estado automáticamente (activo/vencido/cancelado)
-- **Validación estricta:** Todos los endpoints tienen validación de datos con Zod
-- **Delete lógico:** Las inscripciones se cancelan en lugar de eliminarse
-
----
-
-## 👨‍💻 Autor
-
-**Benjamin Ryder Wismath**  
-Backend Developer  
-[GitHub](https://github.com/benjaminryderwismath) | [LinkedIn](https://www.linkedin.com/in/benjamin-ryder-wismath-95b631291)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+- **Refresh token rotation** — cada vez que se renueva el access token, el refresh token también se reemplaza por uno nuevo.
+- **Recordatorios automáticos** — un cron job corre todos los días a las 9am y envía notificaciones por email y WhatsApp a los alumnos cuyo plan vence en 5 días.
+- **Cálculo automático de comisiones** — al registrar un pago, se calcula automáticamente la comisión del profesor y la ganancia del gimnasio según el porcentaje configurado.
+- **Rate limiting** — `/login` y `/register` limitan a 10 intentos por IP cada 15 minutos.
