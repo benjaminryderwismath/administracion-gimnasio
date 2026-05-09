@@ -14,18 +14,19 @@ const {
     updateAlumno,
     deleteAlumno
 } = require("../controllers/alumno.controller");
-const { alumnoSchema } = require("../validators/alumno.validator");
+const { alumnoSchema, updateAlumnoSchema } = require("../validators/alumno.validator");
+const validateId = require("../middlewares/validateId");
 
 router.use(verifyToken);
 
 router.get("/", getAlumnos);
 
-router.get("/:id", getAlumno);
+router.get("/:id", validateId, getAlumno);
 
-router.post("/", validateSchema (alumnoSchema), createAlumno);
+router.post("/", validateSchema(alumnoSchema), createAlumno);
 
-router.put("/:id",updateAlumno);
+router.put("/:id", validateId, validateSchema(updateAlumnoSchema), updateAlumno);
 
-router.delete("/:id", deleteAlumno);
+router.delete("/:id", validateId, deleteAlumno);
 
 module.exports = router;

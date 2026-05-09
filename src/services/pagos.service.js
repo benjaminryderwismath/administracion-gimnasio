@@ -1,5 +1,6 @@
 
 const pool = require("../config/db");
+const AppError = require("../utils/AppError");
 
 const parsePago = (pago) => ({
     ...pago,
@@ -25,7 +26,7 @@ const calcularVencimiento = (tipo, inicio) => {
 const createPago = async ({ inscripcion_id, monto, metodo_pago }) => {
 
     if (!inscripcion_id || !monto) {
-        throw new Error("Datos incompletos");
+        throw new AppError("Datos incompletos", 400);
     }
 
     const inscripcionRes = await pool.query(
@@ -44,7 +45,7 @@ const createPago = async ({ inscripcion_id, monto, metodo_pago }) => {
     const inscripcion = inscripcionRes.rows[0];
 
     if (!inscripcion) {
-        throw new Error("Inscripción no encontrada");
+        throw new AppError("Inscripción no encontrada", 404);
     }
 
     const porcentaje = Number(inscripcion.comision) || 0;

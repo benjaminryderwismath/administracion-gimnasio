@@ -5,10 +5,13 @@ const AppError = require("../utils/AppError");
 
 const getAlumno = async(req, res, next) => {
     try{
-        const alumnos = await alumnoservice.getAlumno(
+        const alumno = await alumnoservice.getAlumno(
             req.params.id
         );
-        res.json(alumnos)
+        if (!alumno) {
+            throw new AppError("Alumno no encontrado", 404);
+        }
+        res.json(alumno);
     } catch (error) {
         next (error);
     }

@@ -10,7 +10,7 @@ const transporter = nodemailer.createTransport({
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
     }
-});
+}); 
 
 const enviarRecordatorio = async (alumno) => {
     const mensaje = `Hola ${alumno.nombre}, tu plan vence el ${alumno.vencimiento}`;
