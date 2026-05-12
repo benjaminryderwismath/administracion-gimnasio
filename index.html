@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,340 +5,297 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gimnasio Admin</title>
 <style>
-    :root {
-    --bg: #0f0f0f;
-    --surface: #1a1a1a;
-    --surface2: #242424;
-    --border: #2e2e2e;
-    --orange: #ff6a00;
-    --orange-dark: #cc5500;
-    --orange-dim: rgba(255,106,0,0.12);
-    --text: #f0f0f0;
-    --text-dim: #888;
-    --red: #e53935;
-    --green: #43a047;
-    --radius: 8px;
-    }
+  :root {
+    --bg: #0f0f0f; --surface: #1a1a1a; --surface2: #242424; --border: #2e2e2e;
+    --orange: #ff6a00; --orange-dark: #cc5500; --orange-dim: rgba(255,106,0,0.12);
+    --text: #f0f0f0; --text-dim: #888; --red: #e53935; --green: #43a047; --radius: 8px;
+  }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; min-height: 100vh; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; min-height: 100vh; }
 
-    /* ── LAYOUT ── */
-    #app { display: flex; min-height: 100vh; }
-    aside {
-    width: 220px; min-height: 100vh; background: var(--surface);
-    border-right: 1px solid var(--border); display: flex; flex-direction: column;
-    position: fixed; top: 0; left: 0; bottom: 0;
-    }
-    .logo {
-    padding: 24px 20px 20px;
-    border-bottom: 1px solid var(--border);
-    }
-    .logo h1 { font-size: 1.1rem; color: var(--orange); letter-spacing: 1px; text-transform: uppercase; }
-    .logo p { font-size: .72rem; color: var(--text-dim); margin-top: 2px; }
-    nav { flex: 1; padding: 12px 0; }
-    nav button {
-    display: flex; align-items: center; gap: 10px;
-    width: 100%; padding: 11px 20px;
-    background: none; border: none; color: var(--text-dim);
-    font-size: .88rem; cursor: pointer; text-align: left;
-    transition: background .15s, color .15s;
-    }
-    nav button:hover { background: var(--orange-dim); color: var(--text); }
-    nav button.active { background: var(--orange-dim); color: var(--orange); font-weight: 600; border-left: 3px solid var(--orange); }
-    nav button .icon { font-size: 1rem; width: 18px; text-align: center; }
-    .sidebar-footer {
-    padding: 16px 20px; border-top: 1px solid var(--border);
-    font-size: .75rem; color: var(--text-dim);
-    }
-    #user-label { color: var(--orange); font-weight: 600; }
-    #btn-logout {
-    margin-top: 8px; width: 100%; padding: 7px;
-    background: #2a1010; border: 1px solid var(--red); color: var(--red);
-    border-radius: var(--radius); cursor: pointer; font-size: .8rem;
-    transition: background .15s;
-    }
-    #btn-logout:hover { background: #3d1a1a; }
+  #page-login { display: none; position: fixed; inset: 0; background: var(--bg); justify-content: center; align-items: center; z-index: 100; }
+  .auth-box { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 40px 36px; width: 360px; }
+  .auth-box h2 { color: var(--orange); margin-bottom: 4px; font-size: 1.4rem; }
+  .auth-box p { color: var(--text-dim); font-size: .85rem; margin-bottom: 24px; }
+  .auth-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+  .auth-tabs button { flex: 1; padding: 8px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface2); color: var(--text-dim); cursor: pointer; font-size: .85rem; transition: .15s; }
+  .auth-tabs button.active { background: var(--orange); color: #fff; border-color: var(--orange); }
 
-    main { margin-left: 220px; flex: 1; padding: 32px; max-width: 960px; }
-    .page { display: none; }
-    .page.active { display: block; }
+  #app { display: none; flex-direction: row; min-height: 100vh; }
+  aside { width: 220px; min-height: 100vh; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; }
+  .logo { padding: 24px 20px 20px; border-bottom: 1px solid var(--border); }
+  .logo h1 { font-size: 1.1rem; color: var(--orange); letter-spacing: 1px; text-transform: uppercase; }
+  .logo p { font-size: .72rem; color: var(--text-dim); margin-top: 2px; }
+  nav { flex: 1; padding: 12px 0; }
+  nav button { display: flex; align-items: center; gap: 10px; width: 100%; padding: 11px 20px; background: none; border: none; color: var(--text-dim); font-size: .88rem; cursor: pointer; text-align: left; transition: background .15s, color .15s; }
+  nav button:hover { background: var(--orange-dim); color: var(--text); }
+  nav button.active { background: var(--orange-dim); color: var(--orange); font-weight: 600; border-left: 3px solid var(--orange); }
+  nav button .icon { font-size: 1rem; width: 18px; text-align: center; }
+  .sidebar-footer { padding: 16px 20px; border-top: 1px solid var(--border); font-size: .75rem; color: var(--text-dim); }
+  #user-label { color: var(--orange); font-weight: 600; }
+  #btn-logout { margin-top: 8px; width: 100%; padding: 7px; background: #2a1010; border: 1px solid var(--red); color: var(--red); border-radius: var(--radius); cursor: pointer; font-size: .8rem; }
+  #btn-logout:hover { background: #3d1a1a; }
 
-  /* ── AUTH ── */
-    #page-login {
-    display: none; position: fixed; inset: 0;
-    background: var(--bg); justify-content: center; align-items: center; z-index: 100;
-    }
-    #page-login.active { display: flex; }
-    .auth-box {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 12px; padding: 40px 36px; width: 360px;
-    }
-    .auth-box h2 { color: var(--orange); margin-bottom: 4px; font-size: 1.4rem; }
-    .auth-box p { color: var(--text-dim); font-size: .85rem; margin-bottom: 24px; }
-    .auth-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
-    .auth-tabs button {
-    flex: 1; padding: 8px; border-radius: var(--radius);
-    border: 1px solid var(--border); background: var(--surface2);
-    color: var(--text-dim); cursor: pointer; font-size: .85rem;
-    transition: .15s;
-    }
-    .auth-tabs button.active { background: var(--orange); color: #fff; border-color: var(--orange); }
+  main { margin-left: 220px; flex: 1; padding: 32px; max-width: 960px; }
+  .page { display: none; }
+  .page.active { display: block; }
 
-    /* ── FORMS / INPUTS ── */
-    .field { margin-bottom: 14px; }
-    .field label { display: block; font-size: .78rem; color: var(--text-dim); margin-bottom: 5px; }
-    .field input, .field select {
-    width: 100%; padding: 9px 12px;
-    background: var(--surface2); border: 1px solid var(--border);
-    border-radius: var(--radius); color: var(--text); font-size: .9rem;
-    outline: none; transition: border .15s;
-    }
-    .field input:focus, .field select:focus { border-color: var(--orange); }
-    .field select option { background: var(--surface2); }
+  .field { margin-bottom: 14px; }
+  .field label { display: block; font-size: .78rem; color: var(--text-dim); margin-bottom: 5px; }
+  .field input, .field select { width: 100%; padding: 9px 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); font-size: .9rem; outline: none; transition: border .15s; }
+  .field input:focus, .field select:focus { border-color: var(--orange); }
+  .field select option { background: var(--surface2); }
 
-    /* ── BUTTONS ── */
-    .btn {
-    padding: 9px 18px; border-radius: var(--radius); border: none;
-    cursor: pointer; font-size: .88rem; font-weight: 600;
-    transition: .15s; display: inline-flex; align-items: center; gap: 6px;
-    }
-    .btn-primary { background: var(--orange); color: #fff; }
-    .btn-primary:hover { background: var(--orange-dark); }
-    .btn-primary:disabled { background: #555; cursor: not-allowed; }
-    .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
-    .btn-secondary:hover { border-color: var(--orange); color: var(--orange); }
-    .btn-danger { background: #2a1010; color: var(--red); border: 1px solid var(--red); }
-    .btn-danger:hover { background: #3d1a1a; }
-    .btn-sm { padding: 5px 10px; font-size: .78rem; }
-    .btn-full { width: 100%; justify-content: center; }
+  .btn { padding: 9px 18px; border-radius: var(--radius); border: none; cursor: pointer; font-size: .88rem; font-weight: 600; transition: .15s; display: inline-flex; align-items: center; gap: 6px; }
+  .btn-primary { background: var(--orange); color: #fff; }
+  .btn-primary:hover { background: var(--orange-dark); }
+  .btn-primary:disabled { background: #555; cursor: not-allowed; }
+  .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+  .btn-secondary:hover { border-color: var(--orange); color: var(--orange); }
+  .btn-danger { background: #2a1010; color: var(--red); border: 1px solid var(--red); }
+  .btn-danger:hover { background: #3d1a1a; }
+  .btn-sm { padding: 5px 10px; font-size: .78rem; }
+  .btn-full { width: 100%; justify-content: center; }
 
-    /* ── PAGE HEADER ── */
-    .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-    .page-header h2 { font-size: 1.4rem; }
-    .page-header h2 span { color: var(--orange); }
+  .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+  .page-header h2 { font-size: 1.4rem; }
+  .page-header h2 span { color: var(--orange); }
 
-    /* ── CARDS / STATS ── */
-    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin-bottom: 28px; }
-    .stat-card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 20px 16px;
-    }
-    .stat-card .label { font-size: .75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: .5px; }
-    .stat-card .value { font-size: 1.8rem; font-weight: 700; color: var(--orange); margin-top: 4px; }
-    .stat-card .sub { font-size: .75rem; color: var(--text-dim); margin-top: 2px; }
+  /* stat-card clickeable */
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin-bottom: 28px; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 16px; transition: border-color .15s, background .15s; }
+  .stat-card.clickable { cursor: pointer; }
+  .stat-card.clickable:hover { border-color: var(--orange); background: var(--orange-dim); }
+  .stat-card .label { font-size: .75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: .5px; }
+  .stat-card .value { font-size: 1.8rem; font-weight: 700; color: var(--orange); margin-top: 4px; }
+  .stat-card .sub { font-size: .75rem; color: var(--text-dim); margin-top: 2px; }
 
-    /* ── TABLE ── */
-    .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
-    table { width: 100%; border-collapse: collapse; font-size: .88rem; }
-    thead th { background: var(--surface2); color: var(--text-dim); font-size: .75rem; text-transform: uppercase; letter-spacing: .5px; padding: 12px 16px; text-align: left; }
-    tbody tr { border-top: 1px solid var(--border); transition: background .1s; }
-    tbody tr:hover { background: var(--orange-dim); }
-    tbody td { padding: 12px 16px; }
-    .actions { display: flex; gap: 6px; }
+  .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 24px; }
+  table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+  thead th { background: var(--surface2); color: var(--text-dim); font-size: .75rem; text-transform: uppercase; letter-spacing: .5px; padding: 12px 16px; text-align: left; }
+  tbody tr { border-top: 1px solid var(--border); transition: background .1s; }
+  tbody tr:hover { background: var(--orange-dim); }
+  tbody td { padding: 12px 16px; }
+  .actions { display: flex; gap: 6px; }
 
-    /* ── MODAL ── */
-    .modal-backdrop {
-    display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,.7); z-index: 200;
-    justify-content: center; align-items: center;
-    }
-    .modal-backdrop.open { display: flex; }
-    .modal {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 12px; padding: 28px 32px; width: 420px; max-width: 95vw;
-    max-height: 90vh; overflow-y: auto;
-    }
-    .modal h3 { margin-bottom: 20px; font-size: 1.1rem; }
-    .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+  .modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 200; justify-content: center; align-items: center; }
+  .modal-backdrop.open { display: flex; }
+  .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px 32px; width: 420px; max-width: 95vw; max-height: 90vh; overflow-y: auto; }
+  .modal h3 { margin-bottom: 20px; font-size: 1.1rem; }
+  .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
 
-    /* ── TOAST ── */
-    #toast {
-    position: fixed; bottom: 24px; right: 24px;
-    padding: 12px 20px; border-radius: var(--radius);
-    font-size: .88rem; font-weight: 600;
-    transform: translateY(80px); opacity: 0;
-    transition: .3s; z-index: 999;
-    }
-    #toast.show { transform: translateY(0); opacity: 1; }
-    #toast.success { background: var(--green); color: #fff; }
-    #toast.error { background: var(--red); color: #fff; }
+  #toast { position: fixed; bottom: 24px; right: 24px; padding: 12px 20px; border-radius: var(--radius); font-size: .88rem; font-weight: 600; transform: translateY(80px); opacity: 0; transition: .3s; z-index: 999; pointer-events: none; }
+  #toast.show { transform: translateY(0); opacity: 1; }
+  #toast.success { background: var(--green); color: #fff; }
+  #toast.error { background: var(--red); color: #fff; }
 
-    /* ── BADGE ── */
-    .badge {
-    display: inline-block; padding: 2px 8px; border-radius: 20px;
-    font-size: .72rem; font-weight: 600;
-    }
-    .badge-orange { background: var(--orange-dim); color: var(--orange); }
-    .badge-green { background: rgba(67,160,71,.15); color: var(--green); }
-    .badge-dim { background: var(--surface2); color: var(--text-dim); }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: .72rem; font-weight: 600; }
+  .badge-orange { background: var(--orange-dim); color: var(--orange); }
+  .badge-green { background: rgba(67,160,71,.15); color: var(--green); }
+  .badge-red { background: rgba(229,57,53,.15); color: var(--red); }
+  .badge-dim { background: var(--surface2); color: var(--text-dim); }
 
-    /* ── SEARCH ── */
-    .search-bar { margin-bottom: 16px; }
-    .search-bar input {
-    padding: 9px 14px; background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); color: var(--text); font-size: .88rem;
-    outline: none; width: 260px; transition: border .15s;
-    }
-    .search-bar input:focus { border-color: var(--orange); }
-
-    /* ── EMPTY ── */
-    .empty { text-align: center; padding: 40px; color: var(--text-dim); font-size: .9rem; }
-
-    /* ── REPORTES ── */
-    .report-table-wrap { margin-top: 20px; }
-    .filter-row { display: flex; gap: 12px; align-items: flex-end; margin-bottom: 20px; flex-wrap: wrap; }
-    .filter-row .field { margin-bottom: 0; }
+  .search-bar { margin-bottom: 16px; }
+  .search-bar input { padding: 9px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); font-size: .88rem; outline: none; width: 260px; transition: border .15s; }
+  .search-bar input:focus { border-color: var(--orange); }
+  .empty { text-align: center; padding: 40px; color: var(--text-dim); font-size: .9rem; }
+  .filter-row { display: flex; gap: 12px; align-items: flex-end; margin-bottom: 20px; flex-wrap: wrap; }
+  .filter-row .field { margin-bottom: 0; }
+  .section-title { font-size: .95rem; color: var(--text-dim); margin: 0 0 16px; }
 </style>
 </head>
 <body>
 
 <!-- LOGIN -->
-<div id="page-login" class="active">
-    <div class="auth-box">
-        <h2>💪 GymAdmin</h2>
-        <p>Panel de administración</p>
-        <div class="auth-tabs">
-        <button class="active" onclick="switchAuth('login')">Iniciar sesión</button>
-        <button onclick="switchAuth('register')">Registrarse</button>
-        </di>
-        <div id="auth-login">
-        <div class="field"><label>Email</label><input id="login-email" type="email" placeholder="admin@gym.com"></div>
-        <div class="field"><label>Contraseña</label><input id="login-pass" type="password" placeholder="••••••••"></div>
-        <button class="btn btn-primary btn-full" onclick="doLogin()">Entrar</button>
-        </div>
+<div id="page-login">
+  <div class="auth-box">
+    <h2>💪 GymAdmin</h2>
+    <p>Panel de administración</p>
+    <div class="auth-tabs">
+      <button class="active" onclick="switchAuth('login')">Iniciar sesión</button>
+      <button onclick="switchAuth('register')">Registrarse</button>
+    </div>
+    <div id="auth-login">
+      <div class="field"><label>Email</label><input id="login-email" type="email" placeholder="admin@gym.com"></div>
+      <div class="field"><label>Contraseña</label><input id="login-pass" type="password" placeholder="••••••••"></div>
+      <button class="btn btn-primary btn-full" onclick="doLogin()">Entrar</button>
+    </div>
     <div id="auth-register" style="display:none">
-        <div class="field"><label>Nombre</label><input id="reg-nombre" type="text" placeholder="Tu nombre"></div>
-        <div class="field"><label>Email</label><input id="reg-email" type="email" placeholder="admin@gym.com"></div>
-        <div class="field"><label>Contraseña</label><input          id="reg-pass" type="password" placeholder="••••••••"></div>
-        <button class="btn btn-primary btn-full" onclick="doRegister()">Crear cuenta</button>
+      <div class="field"><label>Nombre</label><input id="reg-nombre" type="text" placeholder="Tu nombre"></div>
+      <div class="field"><label>Email</label><input id="reg-email" type="email" placeholder="admin@gym.com"></div>
+      <div class="field"><label>Contraseña</label><input id="reg-pass" type="password" placeholder="••••••••"></div>
+      <button class="btn btn-primary btn-full" onclick="doRegister()">Crear cuenta</button>
     </div>
-    </div>
+  </div>
 </div>
 
 <!-- APP -->
-<div id="app" style="display:none">
-    <aside>
-        <div class="logo">
-        <h1>💪 GymAdmin</h1>
-        <p>Panel de administración</p>
+<div id="app" style="display:none; flex-direction:row; min-height:100vh;">
+  <aside>
+    <div class="logo">
+      <h1>💪 GymAdmin</h1>
+      <p>Panel de administración</p>
     </div>
     <nav>
-        <button class="active" onclick="goTo('dashboard')"><span class="icon">🏠</span> Dashboard</button>
-        <button onclick="goTo('alumnos')"><span class="icon">👥</span> Alumnos</button>
-        <button onclick="goTo('profesores')"><span class="icon">🎓</span> Profesores</button>
-        <button onclick="goTo('inscripciones')"><span class="icon">📋</span> Inscripciones</button>
-        <button onclick="goTo('pagos')"><span class="icon">💰</span> Pagos</button>
-        <button onclick="goTo('reportes')"><span class="icon">📊</span> Reportes</button>
+      <button class="active" onclick="goTo('dashboard')"><span class="icon">🏠</span> Dashboard</button>
+      <button onclick="goTo('alumnos')"><span class="icon">👥</span> Alumnos</button>
+      <button onclick="goTo('profesores')"><span class="icon">🎓</span> Profesores</button>
+      <button onclick="goTo('inscripciones')"><span class="icon">📋</span> Inscripciones</button>
+      <button onclick="goTo('pagos')"><span class="icon">💰</span> Pagos</button>
+      <button onclick="goTo('reportes')"><span class="icon">📊</span> Reportes</button>
     </nav>
-        <div class="sidebar-footer">
-        Sesión: <span id="user-label">—</span>
-        <button id="btn-logout" onclick="doLogout()">Cerrar sesión</button>
-        </div>
-    </aside>
+    <div class="sidebar-footer">
+      Sesión: <span id="user-label">—</span>
+      <button id="btn-logout" onclick="doLogout()">Cerrar sesión</button>
+    </div>
+  </aside>
 
-    <main>
+  <main>
     <!-- DASHBOARD -->
-        <div id="page-dashboard" class="page active">
-        <div class="page-header"><h2>🏠 <span>Dashboard</span></h2></div>
-        <div class="stats-grid" id="dash-stats">
-        <div class="stat-card"><div class="label">Alumnos</div><div class="value" id="d-alumnos">—</div></div>
-        <div class="stat-card"><div class="label">Profesores</div><div class="value" id="d-profesores">—</div></div>
-        <div class="stat-card"><div class="label">Inscripciones</div><div class="value" id="d-inscripciones">—</div></div>
-        <div class="stat-card"><div class="label">Pagos totales</div><div class="value" id="d-pagos">—</div></div>
-        <div class="stat-card"><div class="label">Ingresos</div><div class="value" id="d-ingresos">—</div><div class="sub">este mes</div></div>
+    <div id="page-dashboard" class="page active">
+      <div class="page-header"><h2>🏠 <span>Dashboard</span></h2></div>
+      <div class="stats-grid">
+        <div class="stat-card clickable" onclick="goTo('alumnos')">
+          <div class="label">Alumnos</div><div class="value" id="d-alumnos">—</div>
+          <div class="sub">ver todos →</div>
         </div>
-        <div class="table-wrap" id="dash-pagos-recientes">
-        <table><thead><tr><th>Últimos pagos</th><th>Monto</th><th>Método</th><th>Fecha</th></tr></thead>
-        <tbody id="dash-pagos-tbody"><tr><td colspan="4" class="empty">Cargando...</td></tr></tbody></table>
+        <div class="stat-card clickable" onclick="goTo('profesores')">
+          <div class="label">Profesores</div><div class="value" id="d-profesores">—</div>
+          <div class="sub">ver todos →</div>
         </div>
+        <div class="stat-card clickable" onclick="goTo('inscripciones')">
+          <div class="label">Inscripciones</div><div class="value" id="d-inscripciones">—</div>
+          <div class="sub">ver todas →</div>
         </div>
+        <div class="stat-card clickable" onclick="goTo('reportes')">
+          <div class="label">Total ingresos</div><div class="value" id="d-ingresos">—</div>
+          <div class="sub">ver reportes →</div>
+        </div>
+        <div class="stat-card clickable" onclick="goTo('reportes')">
+          <div class="label">Ganancia gimnasio</div><div class="value" id="d-gimnasio">—</div>
+          <div class="sub">ver reportes →</div>
+        </div>
+      </div>
+      <p style="font-size:.8rem;color:var(--text-dim);margin-bottom:12px">Últimos 5 pagos</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Alumno</th><th>Profesor</th><th>Monto</th><th>Método</th><th>Fecha</th></tr></thead>
+          <tbody id="dash-pagos-tbody"><tr><td colspan="5" class="empty">Cargando...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
 
     <!-- ALUMNOS -->
     <div id="page-alumnos" class="page">
-        <div class="page-header">
-            <h2>👥 <span>Alumnos</span></h2>
-            <button class="btn btn-primary" onclick="openModal('alumno')">+ Nuevo alumno</button>
-            </div>
-        <div class="search-bar"><input id="search-alumnos" placeholder="🔍 Buscar alumno..." oninput="filterAlumnos()"></div>
-        <div class="table-wrap">
-        <table><thead><tr><th>ID</th><th>Nombre</th><th>Email</th><th>Teléfono</th><th>Acciones</th></tr></thead>
-        <tbody id="alumnos-tbody"><tr><td colspan="5" class="empty">Cargando...</td></tr></tbody></table>
-        </div>
+      <div class="page-header">
+        <h2>👥 <span>Alumnos</span></h2>
+        <button class="btn btn-primary" onclick="openModal('alumno')">+ Nuevo alumno</button>
+      </div>
+      <div class="search-bar"><input id="search-alumnos" placeholder="🔍 Buscar por nombre o email..." oninput="filterAlumnos()"></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ID</th><th>Nombre</th><th>Email</th><th>Teléfono</th><th>Acciones</th></tr></thead>
+          <tbody id="alumnos-tbody"><tr><td colspan="5" class="empty">Cargando...</td></tr></tbody>
+        </table>
+      </div>
     </div>
 
     <!-- PROFESORES -->
     <div id="page-profesores" class="page">
-        <div class="page-header">
+      <div class="page-header">
         <h2>🎓 <span>Profesores</span></h2>
         <button class="btn btn-primary" onclick="openModal('profesor')">+ Nuevo profesor</button>
-        </div>
-        <div class="table-wrap">
-        <table><thead><tr><th>ID</th><th>Nombre</th><th>Comisión %</th><th>Acciones</th></tr></thead>
-        <tbody id="profesores-tbody"><tr><td colspan="4" class="empty">Cargando...</td></tr></tbody></table>
-        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ID</th><th>Nombre</th><th>Comisión %</th><th>Acciones</th></tr></thead>
+          <tbody id="profesores-tbody"><tr><td colspan="4" class="empty">Cargando...</td></tr></tbody>
+        </table>
+      </div>
     </div>
 
     <!-- INSCRIPCIONES -->
     <div id="page-inscripciones" class="page">
-        <div class="page-header">
+      <div class="page-header">
         <h2>📋 <span>Inscripciones</span></h2>
         <button class="btn btn-primary" onclick="openModal('inscripcion')">+ Nueva inscripción</button>
-        </div>
-        <div class="table-wrap">
-        <table><thead><tr><th>ID</th><th>Alumno</th><th>Profesor</th><th>Tipo</th><th>Fecha</th><th>Acciones</th></tr></thead>
-        <tbody id="inscripciones-tbody"><tr><td colspan="6" class="empty">Cargando...</td></tr></tbody></table>
-        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ID</th><th>Alumno</th><th>Profesor</th><th>Tipo</th><th>Estado</th><th>Inicio</th><th>Vencimiento</th><th>Acciones</th></tr></thead>
+          <tbody id="inscripciones-tbody"><tr><td colspan="8" class="empty">Cargando...</td></tr></tbody>
+        </table>
+      </div>
     </div>
 
     <!-- PAGOS -->
     <div id="page-pagos" class="page">
-        <div class="page-header">
+      <div class="page-header">
         <h2>💰 <span>Pagos</span></h2>
         <button class="btn btn-primary" onclick="openModal('pago')">+ Registrar pago</button>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="label">Total ingresos</div><div class="value" id="p-total">—</div></div>
+        <div class="stat-card"><div class="label">Ganancia gimnasio</div><div class="value" id="p-gimnasio">—</div></div>
+        <div class="stat-card"><div class="label">Comisiones</div><div class="value" id="p-comisiones">—</div></div>
+      </div>
+      <!-- Filtro por profesor -->
+      <div class="filter-row">
+        <div class="field">
+          <label>Filtrar por profesor</label>
+          <select id="filtro-profesor-pagos" onchange="filterPagos()" style="width:220px">
+            <option value="">Todos los profesores</option>
+          </select>
         </div>
-        <div class="stats-grid">
-        <div class="stat-card"><div class="label">Total recaudado</div><div class="value" id="p-total">—</div></div>
-        <div class="stat-card"><div class="label">Pagos registrados</div><div class="value" id="p-count">—</div></div>
-        </div>
-        <div class="table-wrap">
-        <table><thead><tr><th>ID</th><th>Inscripción</th><th>Monto</th><th>Método</th><th>Fecha</th></tr></thead>
-        <tbody id="pagos-tbody"><tr><td colspan="5" class="empty">Cargando...</td></tr></tbody></table>
-        </div>
+        <button class="btn btn-secondary" onclick="document.getElementById('filtro-profesor-pagos').value=''; filterPagos()">Limpiar filtro</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ID</th><th>Alumno</th><th>Profesor</th><th>Monto</th><th>Gimnasio</th><th>Método</th><th>Fecha</th></tr></thead>
+          <tbody id="pagos-tbody"><tr><td colspan="7" class="empty">Cargando...</td></tr></tbody>
+        </table>
+      </div>
     </div>
 
     <!-- REPORTES -->
     <div id="page-reportes" class="page">
-        <div class="page-header"><h2>📊 <span>Reportes</span></h2></div>
-        <h3 style="margin-bottom:16px; font-size:.95rem; color:var(--text-dim)">Métricas mensuales</h3>
-        <div class="filter-row">
+      <div class="page-header"><h2>📊 <span>Reportes</span></h2></div>
+
+      <h3 class="section-title">Ganancias por profesor</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Profesor</th><th>Comisión %</th><th>Total facturado</th><th>Comisión cobrada</th><th>Ganancia gimnasio</th></tr></thead>
+          <tbody id="reportes-prof-tbody"><tr><td colspan="5" class="empty">Cargando...</td></tr></tbody>
+        </table>
+      </div>
+
+      <h3 class="section-title">Métricas mensuales</h3>
+      <div class="filter-row">
         <div class="field"><label>Año</label><input id="r-year" type="number" value="2025" style="width:100px"></div>
         <div class="field"><label>Mes (1-12)</label><input id="r-month" type="number" min="1" max="12" style="width:80px" placeholder="todos"></div>
         <button class="btn btn-primary" onclick="loadReporteMensual()">Consultar</button>
-        </div>
-        <div class="table-wrap report-table-wrap">
-        <table><thead><tr><th>Mes</th><th>Ingresos</th><th>Pagos</th><th>Nuevos alumnos</th></tr></thead>
-        <tbody id="reportes-mensual-tbody"><tr><td colspan="4" class="empty">Ejecutá una consulta</td></tr></tbody></table>
-        </div>
-
-        <h3 style="margin:28px 0 16px; font-size:.95rem; color:var(--text-dim)">Ganancias por profesor</h3>
-        <div class="table-wrap">
-        <table><thead><tr><th>Profesor</th><th>Comisión %</th><th>Total generado</th><th>Ganancia</th></tr></thead>
-        <tbody id="reportes-prof-tbody"><tr><td colspan="4" class="empty">Cargando...</td></tr></tbody></table>
-        </div>
+        <button class="btn btn-secondary" onclick="document.getElementById('r-month').value=''; loadReporteMensual()">Ver todo</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Mes</th><th>Total facturado</th><th>Ganancia gimnasio</th></tr></thead>
+          <tbody id="reportes-mensual-tbody"><tr><td colspan="3" class="empty">Ejecutá una consulta</td></tr></tbody>
+        </table>
+      </div>
     </div>
-    </main>
+  </main>
 </div>
 
-<!-- MODALS -->
+<!-- MODAL -->
 <div class="modal-backdrop" id="modal-backdrop" onclick="closeModalOutside(event)">
-    <div class="modal" id="modal-box">
+  <div class="modal" id="modal-box">
     <h3 id="modal-title">—</h3>
     <div id="modal-body"></div>
     <div class="modal-footer">
-        <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
-        <button class="btn btn-primary" id="modal-confirm" onclick="modalConfirm()">Confirmar</button>
+      <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" id="modal-confirm" onclick="modalConfirm()">Confirmar</button>
     </div>
-    </div>
+  </div>
 </div>
 
 <div id="toast"></div>
@@ -348,409 +304,484 @@
 const API = "https://administracion-gimnasio-7f7r.onrender.com";
 let accessToken = localStorage.getItem("gym_access") || null;
 let refreshToken = localStorage.getItem("gym_refresh") || null;
-let currentModal = null;
-let editId = null;
+let currentModal = null, editId = null;
 let allAlumnos = [], allProfesores = [], allInscripciones = [], allPagos = [];
 
-// ── AUTH ──────────────────────────────────────────
-function switchAuth(tab) {
-    document.querySelectorAll('.auth-tabs button').forEach((b,i) => b.classList.toggle('active', (tab==='login'?i===0:i===1)));
-    document.getElementById('auth-login').style.display = tab==='login'?'block':'none';
-    document.getElementById('auth-register').style.display = tab==='register'?'block':'none';
-}
-
-async function doLogin() {
-    const email = document.getElementById('login-email').value.trim();
-    const pass = document.getElementById('login-pass').value;
-    if (!email||!pass) return toast('Completá los campos','error');
-    const res = await apiFetch('/auth/login',{method:'POST',body:{email,password:pass}},false);
-    if (!res) return;
-    accessToken = res.accessToken; refreshToken = res.refreshToken;
-    localStorage.setItem('gym_access', accessToken);
-    localStorage.setItem('gym_refresh', refreshToken);
-    document.getElementById('user-label').textContent = email.split('@')[0];
+// ── INIT ──────────────────────────────────────────
+function init() {
+  if (accessToken) {
+    document.getElementById('user-label').textContent = localStorage.getItem('gym_user') || 'usuario';
     showApp();
+  } else {
+    showLogin();
+  }
 }
 
-async function doRegister() {
-    const nombre = document.getElementById('reg-nombre').value.trim();
-    const email = document.getElementById('reg-email').value.trim();
-    const pass = document.getElementById('reg-pass').value;
-    if (!nombre||!email||!pass) return toast('Completá todos los campos','error');
-    const res = await apiFetch('/auth/register',{method:'POST',body:{nombre,email,password:pass}},false);
-    if (!res) return;
-    toast('Cuenta creada. Iniciá sesión.','success');
-    switchAuth('login');
-}
-
-async function doLogout() {
-    await apiFetch('/auth/logout',{method:'POST',body:{refreshToken}});
-    accessToken=null; refreshToken=null;
-    localStorage.removeItem('gym_access'); localStorage.removeItem('gym_refresh');
-    location.reload();
+function showLogin() {
+  document.getElementById('page-login').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
 }
 
 function showApp() {
-const login = document.getElementById('page-login');
-const appEl = document.getElementById('app');
-login.style.display = 'none';
-  login.classList.remove('active');
-  appEl.style.display = 'flex';
-  appEl.style.visibility = 'visible';
-  appEl.style.opacity = '1';
+  document.getElementById('page-login').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
   goTo('dashboard');
-  loadDashboard(); loadAlumnos(); loadProfesores(); loadInscripciones(); loadPagos(); loadReporteProf();
+  loadAll();
+}
+
+async function loadAll() {
+  await Promise.all([loadAlumnos(), loadProfesores()]);
+  await Promise.all([loadInscripciones(), loadPagos(), loadDashboard(), loadReporteProf()]);
+}
+
+// ── AUTH ──────────────────────────────────────────
+function switchAuth(tab) {
+  document.querySelectorAll('.auth-tabs button').forEach((b, i) => b.classList.toggle('active', tab === 'login' ? i === 0 : i === 1));
+  document.getElementById('auth-login').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('auth-register').style.display = tab === 'register' ? 'block' : 'none';
+}
+
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pass = document.getElementById('login-pass').value;
+  if (!email || !pass) return toast('Completá los campos', 'error');
+  const res = await apiFetch('/auth/login', { method: 'POST', body: { email, password: pass } }, false);
+  if (!res) return;
+  accessToken = res.accessToken; refreshToken = res.refreshToken;
+  localStorage.setItem('gym_access', accessToken);
+  localStorage.setItem('gym_refresh', refreshToken);
+  const uname = email.split('@')[0];
+  localStorage.setItem('gym_user', uname);
+  document.getElementById('user-label').textContent = uname;
+  showApp();
+}
+
+async function doRegister() {
+  const nombre = document.getElementById('reg-nombre').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const pass = document.getElementById('reg-pass').value;
+  if (!nombre || !email || !pass) return toast('Completá todos los campos', 'error');
+  const res = await apiFetch('/auth/register', { method: 'POST', body: { nombre, email, password: pass } }, false);
+  if (!res) return;
+  toast('Cuenta creada. Iniciá sesión.', 'success');
+  switchAuth('login');
+}
+
+async function doLogout() {
+  try { await apiFetch('/auth/logout', { method: 'POST', body: { refreshToken } }); } catch(e) {}
+  accessToken = null; refreshToken = null;
+  localStorage.removeItem('gym_access'); localStorage.removeItem('gym_refresh'); localStorage.removeItem('gym_user');
+  showLogin();
 }
 
 // ── API FETCH ─────────────────────────────────────
-async function apiFetch(path, opts={}, auth=true) {
-    const headers = {'Content-Type':'application/json'};
-    if (auth && accessToken) headers['Authorization'] = `Bearer ${accessToken}`;
-    try {
-    const r = await fetch(API+path, {
-        method: opts.method||'GET',
-        headers,
-        body: opts.body ? JSON.stringify(opts.body) : undefined
+async function apiFetch(path, opts = {}, auth = true) {
+  const headers = { 'Content-Type': 'application/json' };
+  if (auth && accessToken) headers['Authorization'] = `Bearer ${accessToken}`;
+  try {
+    const r = await fetch(API + path, {
+      method: opts.method || 'GET', headers,
+      body: opts.body ? JSON.stringify(opts.body) : undefined
     });
-    if (r.status===401 && auth) { await tryRefresh(); return apiFetch(path,opts,auth); }
+    if (r.status === 401 && auth) {
+      const ok = await tryRefresh();
+      if (!ok) return null;
+      return apiFetch(path, opts, auth);
+    }
     const data = await r.json();
-    if (!r.ok) { toast(data.message||'Error en la petición','error'); return null; }
+    if (!r.ok) { toast(data.message || 'Error en la petición', 'error'); return null; }
     return data;
-    } catch(e) { toast('Error de conexión','error'); return null; }
+  } catch(e) { toast('Error de conexión con el servidor', 'error'); return null; }
 }
 
 async function tryRefresh() {
-    if (!refreshToken) return doLogout();
-    const r = await fetch(API+'/auth/refresh',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({refreshToken})});
-    if (!r.ok) return doLogout();
+  if (!refreshToken) { showLogin(); return false; }
+  try {
+    const r = await fetch(API + '/auth/refresh', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ refreshToken }) });
+    if (!r.ok) { showLogin(); return false; }
     const d = await r.json();
     accessToken = d.accessToken; refreshToken = d.refreshToken;
-    localStorage.setItem('gym_access',accessToken);
-    localStorage.setItem('gym_refresh',refreshToken);
+    localStorage.setItem('gym_access', accessToken); localStorage.setItem('gym_refresh', refreshToken);
+    return true;
+  } catch(e) { showLogin(); return false; }
 }
 
 // ── NAVIGATION ────────────────────────────────────
 function goTo(name) {
-    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-    document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
-    document.getElementById('page-'+name).classList.add('active');
-    const idx = ['dashboard','alumnos','profesores','inscripciones','pagos','reportes'].indexOf(name);
-    document.querySelectorAll('nav button')[idx].classList.add('active');
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  const idx = ['dashboard','alumnos','profesores','inscripciones','pagos','reportes'].indexOf(name);
+  if (idx >= 0) document.querySelectorAll('nav button')[idx].classList.add('active');
 }
 
 // ── DASHBOARD ─────────────────────────────────────
 async function loadDashboard() {
-    const [alumnos,profs,inscripciones,resumen] = await Promise.all([
-    apiFetch('/alumnos'), apiFetch('/profesores'),
-    apiFetch('/inscripciones'), apiFetch('/pagos/resumen')
-    ]);
-    if (alumnos) document.getElementById('d-alumnos').textContent = alumnos.length;
-    if (profs) document.getElementById('d-profesores').textContent = profs.length;
-    if (inscripciones) document.getElementById('d-inscripciones').textContent = inscripciones.length;
-    if (resumen) {
-    document.getElementById('d-pagos').textContent = resumen.total_pagos ?? '—';
-    document.getElementById('d-ingresos').textContent = resumen.total_ingresos ? '$'+Number(resumen.total_ingresos).toLocaleString('es-AR') : '—';
-    }
-    const pagos = await apiFetch('/pagos');
-    if (pagos) {
-    allPagos = pagos;
-    const recent = [...pagos].sort((a,b)=>new Date(b.fecha)-new Date(a.fecha)).slice(0,5);
-    document.getElementById('dash-pagos-tbody').innerHTML = recent.length
-        ? recent.map(p=>`<tr>
-            <td>#${p.id}</td>
-            <td>$${Number(p.monto).toLocaleString('es-AR')}</td>
-            <td><span class="badge badge-dim">${p.metodo_pago||'—'}</span></td>
-            <td>${fmtDate(p.fecha)}</td>
-        </tr>`).join('')
-        : `<tr><td colspan="4" class="empty">Sin pagos</td></tr>`;
-    } 
+  const [resumen, pagos] = await Promise.all([apiFetch('/pagos/resumen'), apiFetch('/pagos')]);
+
+  document.getElementById('d-alumnos').textContent = allAlumnos.length;
+  document.getElementById('d-profesores').textContent = allProfesores.length;
+  document.getElementById('d-inscripciones').textContent = allInscripciones.length;
+
+  if (resumen) {
+    document.getElementById('d-ingresos').textContent = '$' + Number(resumen.total_ingresos).toLocaleString('es-AR');
+    document.getElementById('d-gimnasio').textContent = '$' + Number(resumen.total_gimnasio).toLocaleString('es-AR');
+  }
+
+  if (pagos && pagos.length) {
+    const recent = pagos.slice(0, 5);
+    document.getElementById('dash-pagos-tbody').innerHTML = recent.map(p => `<tr>
+      <td>${p.alumno || '—'}</td>
+      <td>${p.profesor || '—'}</td>
+      <td style="color:var(--green);font-weight:600">$${Number(p.monto).toLocaleString('es-AR')}</td>
+      <td><span class="badge badge-dim">${p.metodo_pago || '—'}</span></td>
+      <td>${fmtDate(p.fecha)}</td>
+    </tr>`).join('');
+  } else {
+    document.getElementById('dash-pagos-tbody').innerHTML = `<tr><td colspan="5" class="empty">Sin pagos registrados</td></tr>`;
+  }
 }
 
 // ── ALUMNOS ───────────────────────────────────────
 async function loadAlumnos() {
-    const data = await apiFetch('/alumnos');
-    if (!data) return;
-    allAlumnos = data;
-    renderAlumnos(data);
+  const data = await apiFetch('/alumnos');
+  if (!data) return;
+  allAlumnos = data;
+  renderAlumnos(data);
 }
 
 function renderAlumnos(data) {
-    document.getElementById('alumnos-tbody').innerHTML = data.length
-    ? data.map(a=>`<tr>
+  document.getElementById('alumnos-tbody').innerHTML = data.length
+    ? data.map(a => `<tr>
         <td>${a.id}</td><td>${a.nombre}</td><td>${a.email}</td>
-        <td>${a.telefono||'—'}</td>
+        <td>${a.telefono || '—'}</td>
         <td class="actions">
-        <button class="btn btn-secondary btn-sm" onclick="editAlumno(${a.id})">✏️</button>
-        <button class="btn btn-danger btn-sm" onclick="deleteAlumno(${a.id})">🗑</button>
+          <button class="btn btn-secondary btn-sm" onclick="editAlumno(${a.id})">✏️</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteAlumno(${a.id})">🗑</button>
         </td>
-        </tr>`).join('')
-    : `<tr><td colspan="5" class="empty">Sin alumnos</td></tr>`;
+      </tr>`).join('')
+    : `<tr><td colspan="5" class="empty">Sin alumnos registrados</td></tr>`;
 }
 
 function filterAlumnos() {
-    const q = document.getElementById('search-alumnos').value.toLowerCase();
-    renderAlumnos(allAlumnos.filter(a=>a.nombre.toLowerCase().includes(q)||a.email.toLowerCase().includes(q)));
+  const q = document.getElementById('search-alumnos').value.toLowerCase();
+  renderAlumnos(allAlumnos.filter(a => a.nombre.toLowerCase().includes(q) || a.email.toLowerCase().includes(q)));
 }
 
-function editAlumno(id) {
-    const a = allAlumnos.find(x=>x.id===id);
-    openModal('alumno', a);
-}
+function editAlumno(id) { openModal('alumno', allAlumnos.find(x => x.id === id)); }
 
 async function deleteAlumno(id) {
-    if (!confirm('¿Eliminar este alumno?')) return;
-    const r = await apiFetch(`/alumnos/${id}`,{method:'DELETE'});
-    if (r) { toast('Alumno eliminado','success'); loadAlumnos(); loadDashboard(); }
+  if (!confirm('¿Eliminar este alumno?')) return;
+  const r = await apiFetch(`/alumnos/${id}`, { method: 'DELETE' });
+  if (r !== null) { toast('Alumno eliminado', 'success'); await loadAlumnos(); loadDashboard(); }
 }
 
 // ── PROFESORES ────────────────────────────────────
 async function loadProfesores() {
-    const data = await apiFetch('/profesores');
-    if (!data) return;
-    allProfesores = data;
-    renderProfesores(data);
+  const data = await apiFetch('/profesores');
+  if (!data) return;
+  allProfesores = data;
+  renderProfesores(data);
+  // poblar filtro de pagos
+  const sel = document.getElementById('filtro-profesor-pagos');
+  sel.innerHTML = '<option value="">Todos los profesores</option>' +
+    data.map(p => `<option value="${p.nombre}">${p.nombre}</option>`).join('');
 }
 
 function renderProfesores(data) {
-    document.getElementById('profesores-tbody').innerHTML = data.length
-    ? data.map(p=>`<tr>
+  document.getElementById('profesores-tbody').innerHTML = data.length
+    ? data.map(p => `<tr>
         <td>${p.id}</td><td>${p.nombre}</td>
         <td><span class="badge badge-orange">${p.comision}%</span></td>
         <td class="actions">
-        <button class="btn btn-secondary btn-sm" onclick="editProfesor(${p.id})">✏️</button>
-        <button class="btn btn-danger btn-sm" onclick="deleteProfesor(${p.id})">🗑</button>
+          <button class="btn btn-secondary btn-sm" onclick="editProfesor(${p.id})">✏️</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteProfesor(${p.id})">🗑</button>
         </td>
-        </tr>`).join('')
-    : `<tr><td colspan="4" class="empty">Sin profesores</td></tr>`;
+      </tr>`).join('')
+    : `<tr><td colspan="4" class="empty">Sin profesores registrados</td></tr>`;
 }
 
-function editProfesor(id) {
-    const p = allProfesores.find(x=>x.id===id);
-    openModal('profesor', p);
-}
+function editProfesor(id) { openModal('profesor', allProfesores.find(x => x.id === id)); }
 
 async function deleteProfesor(id) {
-    if (!confirm('¿Eliminar este profesor?')) return;
-    const r = await apiFetch(`/profesores/${id}`,{method:'DELETE'});
-    if (r) { toast('Profesor eliminado','success'); loadProfesores(); }
+  if (!confirm('¿Eliminar este profesor?')) return;
+  const r = await apiFetch(`/profesores/${id}`, { method: 'DELETE' });
+  if (r !== null) { toast('Profesor eliminado', 'success'); await loadProfesores(); }
 }
 
 // ── INSCRIPCIONES ─────────────────────────────────
 async function loadInscripciones() {
-    const data = await apiFetch('/inscripciones');
-    if (!data) return;
-    allInscripciones = data;
-    renderInscripciones(data);
+  const data = await apiFetch('/inscripciones');
+  if (!data) return;
+  allInscripciones = data;
+  renderInscripciones(data);
+}
+
+function estadoBadge(estado) {
+  if (estado === 'activo') return `<span class="badge badge-green">activo</span>`;
+  if (estado === 'vencido') return `<span class="badge badge-red">vencido</span>`;
+  return `<span class="badge badge-dim">${estado}</span>`;
 }
 
 function renderInscripciones(data) {
-    document.getElementById('inscripciones-tbody').innerHTML = data.length
-    ? data.map(i=>{
-        const alumno = allAlumnos.find(a=>a.id===i.alumno_id);
-        const prof = allProfesores.find(p=>p.id===i.profesor_id);
-        return `<tr>
-            <td>${i.id}</td>
-            <td>${alumno?alumno.nombre:`#${i.alumno_id}`}</td>
-            <td>${prof?prof.nombre:'Sin asignar'}</td>
-            <td><span class="badge badge-orange">${i.tipo}</span></td>
-            <td>${fmtDate(i.fecha_inicio||i.created_at||'')}</td>
-            <td class="actions">
-            <button class="btn btn-secondary btn-sm" onclick="editInscripcion(${i.id})">✏️</button>
-            <button class="btn btn-danger btn-sm" onclick="deleteInscripcion(${i.id})">🗑</button>
-            </td>
-        </tr>`;
-        }).join('')
-    : `<tr><td colspan="6" class="empty">Sin inscripciones</td></tr>`;
+  document.getElementById('inscripciones-tbody').innerHTML = data.length
+    ? data.map(i => `<tr>
+        <td>${i.id}</td>
+        <td>${i.alumno || '—'}</td>
+        <td>${i.profesor || 'Sin asignar'}</td>
+        <td><span class="badge badge-orange">${i.tipo}</span></td>
+        <td>${estadoBadge(i.estado)}</td>
+        <td>${fmtDate(i.inicio)}</td>
+        <td>${fmtDate(i.vencimiento)}</td>
+        <td class="actions">
+          <button class="btn btn-secondary btn-sm" onclick="editInscripcion(${i.id})">✏️</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteInscripcion(${i.id})">🗑</button>
+        </td>
+      </tr>`).join('')
+    : `<tr><td colspan="8" class="empty">Sin inscripciones registradas</td></tr>`;
 }
 
-function editInscripcion(id) {
-    const i = allInscripciones.find(x=>x.id===id);
-    openModal('inscripcion', i);
-}
+function editInscripcion(id) { openModal('inscripcion', allInscripciones.find(x => x.id === id)); }
 
 async function deleteInscripcion(id) {
-    if (!confirm('¿Eliminar esta inscripción?')) return;
-    const r = await apiFetch(`/inscripciones/${id}`,{method:'DELETE'});
-    if (r) { toast('Inscripción eliminada','success'); loadInscripciones(); }
+  if (!confirm('¿Cancelar esta inscripción?')) return;
+  const r = await apiFetch(`/inscripciones/${id}`, { method: 'DELETE' });
+  if (r !== null) { toast('Inscripción cancelada', 'success'); loadInscripciones(); }
 }
 
 // ── PAGOS ─────────────────────────────────────────
 async function loadPagos() {
-    const [pagos, resumen] = await Promise.all([apiFetch('/pagos'), apiFetch('/pagos/resumen')]);
-    if (pagos) {
+  const [pagos, resumen] = await Promise.all([apiFetch('/pagos'), apiFetch('/pagos/resumen')]);
+  if (pagos) {
     allPagos = pagos;
-    document.getElementById('p-count').textContent = pagos.length;
-    document.getElementById('pagos-tbody').innerHTML = pagos.length
-    ? [...pagos].sort((a,b)=>new Date(b.fecha)-new Date(a.fecha)).map(p=>`<tr>
+    renderPagos(pagos);
+  }
+  if (resumen) {
+    document.getElementById('p-total').textContent = '$' + Number(resumen.total_ingresos).toLocaleString('es-AR');
+    document.getElementById('p-gimnasio').textContent = '$' + Number(resumen.total_gimnasio).toLocaleString('es-AR');
+    document.getElementById('p-comisiones').textContent = '$' + Number(resumen.total_profesores).toLocaleString('es-AR');
+  }
+}
+
+function renderPagos(data) {
+  document.getElementById('pagos-tbody').innerHTML = data.length
+    ? data.map(p => `<tr>
         <td>${p.id}</td>
-        <td>#${p.inscripcion_id}</td>
+        <td>${p.alumno || '—'}</td>
+        <td>${p.profesor || '—'}</td>
         <td style="color:var(--green);font-weight:600">$${Number(p.monto).toLocaleString('es-AR')}</td>
-        <td><span class="badge badge-dim">${p.metodo_pago||'—'}</span></td>
+        <td>$${Number(p.ganancia_gimnasio).toLocaleString('es-AR')}</td>
+        <td><span class="badge badge-dim">${p.metodo_pago || '—'}</span></td>
         <td>${fmtDate(p.fecha)}</td>
-        </tr>`).join('')
-        : `<tr><td colspan="5" class="empty">Sin pagos</td></tr>`;
-    }
-    if (resumen) document.getElementById('p-total').textContent = resumen.total_ingresos ? '$'+Number(resumen.total_ingresos).toLocaleString('es-AR') : '—';
+      </tr>`).join('')
+    : `<tr><td colspan="7" class="empty">Sin pagos registrados</td></tr>`;
+}
+
+function filterPagos() {
+  const prof = document.getElementById('filtro-profesor-pagos').value;
+  if (!prof) return renderPagos(allPagos);
+  renderPagos(allPagos.filter(p => p.profesor === prof));
 }
 
 // ── REPORTES ──────────────────────────────────────
 async function loadReporteProf() {
-    const data = await apiFetch('/reportes/profesores');
-    if (!data) return;
-    document.getElementById('reportes-prof-tbody').innerHTML = (Array.isArray(data)?data:[data]).length
-    ? (Array.isArray(data)?data:[data]).map(p=>`<tr>
+  // Muestra todos los profesores, con o sin pagos
+  const [reporteData] = await Promise.all([apiFetch('/reportes/profesores')]);
+  const reporte = Array.isArray(reporteData) ? reporteData : (reporteData ? [reporteData] : []);
+
+  // Combinar con todos los profesores para mostrar incluso los sin pagos
+  const rows = allProfesores.map(p => {
+    const rep = reporte.find(r => r.id === p.id || r.nombre === p.nombre);
+    return {
+      nombre: p.nombre,
+      comision: p.comision,
+      total_facturado: rep ? Number(rep.total_facturado) : 0,
+      total_comision: rep ? Number(rep.total_comision) : 0,
+      ganancia_gimnasio: rep ? Number(rep.ganancia_gimnasio) : 0,
+    };
+  });
+
+  document.getElementById('reportes-prof-tbody').innerHTML = rows.length
+    ? rows.map(p => `<tr>
         <td>${p.nombre}</td>
-        <td>${p.comision}%</td>
-        <td>$${Number(p.total_generado||0).toLocaleString('es-AR')}</td>
-        <td style="color:var(--green);font-weight:600">$${Number(p.ganancia||0).toLocaleString('es-AR')}</td>
-        </tr>`).join('')
-        : `<tr><td colspan="4" class="empty">Sin datos</td></tr>`;
+        <td><span class="badge badge-orange">${p.comision}%</span></td>
+        <td>$${p.total_facturado.toLocaleString('es-AR')}</td>
+        <td>$${p.total_comision.toLocaleString('es-AR')}</td>
+        <td style="color:var(--green);font-weight:600">$${p.ganancia_gimnasio.toLocaleString('es-AR')}</td>
+      </tr>`).join('')
+    : `<tr><td colspan="5" class="empty">No hay profesores registrados</td></tr>`;
 }
 
 async function loadReporteMensual() {
-    const year = document.getElementById('r-year').value;
-    const month = document.getElementById('r-month').value;
-    const path = month ? `/reportes/mensual?year=${year}&month=${month}` : `/reportes/mensual`;
-    const data = await apiFetch(path);
-    if (!data) return;
+  const year = document.getElementById('r-year').value;
+  const month = document.getElementById('r-month').value;
+  const path = month ? `/reportes/mensual?year=${year}&month=${month}` : `/reportes/mensual`;
+  const data = await apiFetch(path);
+  if (!data) return;
+
+  if (month) {
+    const r = data;
+    document.getElementById('reportes-mensual-tbody').innerHTML = r && r.total_facturado
+      ? `<tr>
+          <td>${year}/${month.padStart(2,'0')}</td>
+          <td style="color:var(--green);font-weight:600">$${Number(r.total_facturado).toLocaleString('es-AR')}</td>
+          <td>$${Number(r.ganancia_gimnasio).toLocaleString('es-AR')}</td>
+        </tr>`
+      : `<tr><td colspan="3" class="empty">Sin datos para ese período</td></tr>`;
+  } else {
     const rows = Array.isArray(data) ? data : [data];
     document.getElementById('reportes-mensual-tbody').innerHTML = rows.length
-    ? rows.map(r=>`<tr>
-        <td>${r.mes||r.month||'—'}</td>
-        <td style="color:var(--green);font-weight:600">$${Number(r.ingresos||r.total_ingresos||0).toLocaleString('es-AR')}</td>
-        <td>${r.total_pagos||r.pagos||0}</td>
-        <td>${r.nuevos_alumnos||r.alumnos||0}</td>
+      ? rows.map(r => `<tr>
+          <td>${fmtMes(r.mes)}</td>
+          <td style="color:var(--green);font-weight:600">$${Number(r.total_facturado || 0).toLocaleString('es-AR')}</td>
+          <td>$${Number(r.ganancia_gimnasio || 0).toLocaleString('es-AR')}</td>
         </tr>`).join('')
-    : `<tr><td colspan="4" class="empty">Sin datos para ese período</td></tr>`;
+      : `<tr><td colspan="3" class="empty">Sin datos</td></tr>`;
+  }
 }
 
 // ── MODAL ─────────────────────────────────────────
-function openModal(type, data=null) {
-    currentModal = type; editId = data?data.id:null;
-    const titles = {alumno:'Alumno',profesor:'Profesor',inscripcion:'Inscripción',pago:'Pago'};
-    document.getElementById('modal-title').textContent = (data?'Editar ':'Nuevo ')+titles[type];
-    document.getElementById('modal-body').innerHTML = buildForm(type, data);
-    document.getElementById('modal-backdrop').classList.add('open');
+function openModal(type, data = null) {
+  currentModal = type; editId = data ? data.id : null;
+  const titles = { alumno: 'Alumno', profesor: 'Profesor', inscripcion: 'Inscripción', pago: 'Pago' };
+  document.getElementById('modal-title').textContent = (data ? 'Editar ' : 'Nuevo ') + titles[type];
+  document.getElementById('modal-body').innerHTML = buildForm(type, data);
+  document.getElementById('modal-backdrop').classList.add('open');
 }
 
 function buildForm(type, d) {
-    if (type==='alumno') return `
-    <div class="field"><label>Nombre</label><input id="f-nombre" value="${d?d.nombre:''}"></div>
-    <div class="field"><label>Email</label><input id="f-email" type="email" value="${d?d.email:''}"></div>
-    <div class="field"><label>Teléfono (opcional)</label><input id="f-telefono" value="${d&&d.telefono?d.telefono:''}"></div>`;
-    if (type==='profesor') return `
-    <div class="field"><label>Nombre</label><input id="f-nombre" value="${d?d.nombre:''}"></div>
-    <div class="field"><label>Comisión %</label><input id="f-comision" type="number" min="0" max="100" value="${d?d.comision:10}"></div>`;
-    if (type==='inscripcion') {
-    const aOpts = allAlumnos.map(a=>`<option value="${a.id}" ${d&&d.alumno_id===a.id?'selected':''}>${a.nombre}</option>`).join('');
-    const pOpts = '<option value="">Sin profesor</option>'+allProfesores.map(p=>`<option value="${p.id}" ${d&&d.profesor_id===p.id?'selected':''}>${p.nombre}</option>`).join('');
-    const tipos = ['mensual','trimestral','semestral','anual'].map(t=>`<option value="${t}" ${d&&d.tipo===t?'selected':''}>${t}</option>`).join('');
-    return `
-    ${d?'':`<div class="field"><label>Alumno</label><select id="f-alumno">${aOpts}</select></div>`}
-    <div class="field"><label>Profesor (opcional)</label><select id="f-profesor">${pOpts}</select></div>
-    <div class="field"><label>Tipo</label><select id="f-tipo">${tipos}</select></div>`;
+  if (type === 'alumno') return `
+    <div class="field"><label>Nombre</label><input id="f-nombre" value="${d ? esc(d.nombre) : ''}"></div>
+    <div class="field"><label>Email</label><input id="f-email" type="email" value="${d ? esc(d.email) : ''}"></div>
+    <div class="field"><label>Teléfono (opcional)</label><input id="f-telefono" value="${d && d.telefono ? esc(d.telefono) : ''}"></div>`;
+
+  if (type === 'profesor') return `
+    <div class="field"><label>Nombre</label><input id="f-nombre" value="${d ? esc(d.nombre) : ''}"></div>
+    <div class="field"><label>Comisión %</label><input id="f-comision" type="number" min="0" max="100" step="0.1" value="${d ? d.comision : 10}"></div>`;
+
+  if (type === 'inscripcion') {
+    const aOpts = allAlumnos.map(a => `<option value="${a.id}">${a.nombre}</option>`).join('');
+    const pOpts = '<option value="">Sin profesor</option>' + allProfesores.map(p => `<option value="${p.id}">${p.nombre}</option>`).join('');
+    const tipos = ['mensual','trimestral','semestral','anual'].map(t => `<option value="${t}" ${d && d.tipo === t ? 'selected' : ''}>${t}</option>`).join('');
+    if (d) {
+      return `
+        <div class="field"><label>Alumno</label><input value="${esc(d.alumno || '')}" disabled style="opacity:.5"></div>
+        <div class="field"><label>Profesor</label><select id="f-profesor">${pOpts}</select></div>
+        <div class="field"><label>Tipo</label><select id="f-tipo">${tipos}</select></div>`;
     }
-    if (type==='pago') {
-    const iOpts = allInscripciones.map(i=>`<option value="${i.id}">#${i.id} - Alumno ${i.alumno_id}</option>`).join('');
     return `
-        <div class="field"><label>Inscripción</label><select id="f-inscripcion">${iOpts}</select></div>
-        <div class="field"><label>Monto ($)</label><input id="f-monto" type="number" step="0.01" placeholder="5000"></div>
-        <div class="field"><label>Método de pago</label>
+      <div class="field"><label>Alumno</label><select id="f-alumno">${aOpts}</select></div>
+      <div class="field"><label>Profesor (opcional)</label><select id="f-profesor">${pOpts}</select></div>
+      <div class="field"><label>Tipo</label><select id="f-tipo">${tipos}</select></div>`;
+  }
+
+  if (type === 'pago') {
+    const iOpts = allInscripciones
+      .filter(i => i.estado === 'activo' || i.estado === 'vencido')
+      .map(i => `<option value="${i.id}">#${i.id} — ${i.alumno || 'Alumno'} (${i.tipo})</option>`).join('');
+    return `
+      <div class="field"><label>Inscripción</label><select id="f-inscripcion">${iOpts || '<option disabled>Sin inscripciones</option>'}</select></div>
+      <div class="field"><label>Monto ($)</label><input id="f-monto" type="number" step="0.01" min="0" placeholder="5000"></div>
+      <div class="field"><label>Método de pago</label>
         <select id="f-metodo">
-            <option value="efectivo">Efectivo</option>
-            <option value="transferencia">Transferencia</option>
-            <option value="tarjeta">Tarjeta</option>
+          <option value="efectivo">Efectivo</option>
+          <option value="transferencia">Transferencia</option>
+          <option value="tarjeta">Tarjeta</option>
         </select>
-        </div>`;
-    }
+      </div>`;
+  }
 }
 
-function closeModal() {
-    document.getElementById('modal-backdrop').classList.remove('open');
-    currentModal=null; editId=null;
-}
-
-function closeModalOutside(e) {
-    if (e.target===document.getElementById('modal-backdrop')) closeModal();
-}
+function closeModal() { document.getElementById('modal-backdrop').classList.remove('open'); currentModal = null; editId = null; }
+function closeModalOutside(e) { if (e.target === document.getElementById('modal-backdrop')) closeModal(); }
 
 async function modalConfirm() {
-    const btn = document.getElementById('modal-confirm');
-    btn.disabled=true;
-    if (currentModal==='alumno') await saveAlumno();
-    else if (currentModal==='profesor') await saveProfesor();
-    else if (currentModal==='inscripcion') await saveInscripcion();
-    else if (currentModal==='pago') await savePago();
-    btn.disabled=false;
+  const btn = document.getElementById('modal-confirm');
+  btn.disabled = true;
+  if (currentModal === 'alumno') await saveAlumno();
+  else if (currentModal === 'profesor') await saveProfesor();
+  else if (currentModal === 'inscripcion') await saveInscripcion();
+  else if (currentModal === 'pago') await savePago();
+  btn.disabled = false;
 }
 
 async function saveAlumno() {
-    const nombre = document.getElementById('f-nombre').value.trim();
-    const email = document.getElementById('f-email').value.trim();
-    const telefono = document.getElementById('f-telefono').value.trim();
-    if (!nombre||!email) return toast('Nombre y email requeridos','error');
-    const body = {nombre,email}; if (telefono) body.telefono=telefono;
-    const r = editId
-    ? await apiFetch(`/alumnos/${editId}`,{method:'PUT',body})
-    : await apiFetch('/alumnos',{method:'POST',body});
-    if (r) { toast(editId?'Alumno actualizado':'Alumno creado','success'); closeModal(); loadAlumnos(); loadDashboard(); }
+  const nombre = document.getElementById('f-nombre').value.trim();
+  const email = document.getElementById('f-email').value.trim();
+  const telefono = document.getElementById('f-telefono').value.trim();
+  if (!nombre || !email) return toast('Nombre y email son requeridos', 'error');
+  const body = { nombre, email };
+  if (telefono) body.telefono = telefono;
+  const r = editId
+    ? await apiFetch(`/alumnos/${editId}`, { method: 'PUT', body })
+    : await apiFetch('/alumnos', { method: 'POST', body });
+  if (r) { toast(editId ? 'Alumno actualizado' : 'Alumno creado', 'success'); closeModal(); await loadAlumnos(); loadDashboard(); }
 }
 
 async function saveProfesor() {
-    const nombre = document.getElementById('f-nombre').value.trim();
-    const comision = parseFloat(document.getElementById('f-comision').value);
-    if (!nombre) return toast('Nombre requerido','error');
-    const body = {nombre,comision};
-    const r = editId
-    ? await apiFetch(`/profesores/${editId}`,{method:'PUT',body})
-    : await apiFetch('/profesores',{method:'POST',body});
-    if (r) { toast(editId?'Profesor actualizado':'Profesor creado','success'); closeModal(); loadProfesores(); loadDashboard(); }
+  const nombre = document.getElementById('f-nombre').value.trim();
+  const comision = parseFloat(document.getElementById('f-comision').value);
+  if (!nombre) return toast('El nombre es requerido', 'error');
+  if (isNaN(comision) || comision < 0 || comision > 100) return toast('Comisión inválida (0-100)', 'error');
+  const body = { nombre, comision };
+  const r = editId
+    ? await apiFetch(`/profesores/${editId}`, { method: 'PUT', body })
+    : await apiFetch('/profesores', { method: 'POST', body });
+  if (r) { toast(editId ? 'Profesor actualizado' : 'Profesor creado', 'success'); closeModal(); await loadProfesores(); await loadReporteProf(); }
 }
 
 async function saveInscripcion() {
-    const tipo = document.getElementById('f-tipo').value;
-    const profesor_id = document.getElementById('f-profesor').value ? parseInt(document.getElementById('f-profesor').value) : null;
-    if (editId) {
-    const r = await apiFetch(`/inscripciones/${editId}`,{method:'PUT',body:{tipo}});
-    if (r) { toast('Inscripción actualizada','success'); closeModal(); loadInscripciones(); }
-    } else {
+  const tipo = document.getElementById('f-tipo').value;
+  const profEl = document.getElementById('f-profesor');
+  const profesor_id = profEl && profEl.value ? parseInt(profEl.value) : null;
+
+  if (editId) {
+    const body = { tipo };
+    if (profesor_id) body.profesor_id = profesor_id;
+    const r = await apiFetch(`/inscripciones/${editId}`, { method: 'PUT', body });
+    if (r) { toast('Inscripción actualizada', 'success'); closeModal(); loadInscripciones(); }
+  } else {
     const alumno_id = parseInt(document.getElementById('f-alumno').value);
-    const body = {alumno_id, tipo}; if (profesor_id) body.profesor_id=profesor_id;
-    const r = await apiFetch('/inscripciones',{method:'POST',body});
-    if (r) { toast('Inscripción creada','success'); closeModal(); loadInscripciones(); loadDashboard(); }
-    }
+    if (!alumno_id) return toast('Seleccioná un alumno', 'error');
+    const body = { alumno_id, tipo };
+    if (profesor_id) body.profesor_id = profesor_id;
+    const r = await apiFetch('/inscripciones', { method: 'POST', body });
+    if (r) { toast('Inscripción creada', 'success'); closeModal(); loadInscripciones(); loadDashboard(); }
+  }
 }
 
 async function savePago() {
-    const inscripcion_id = parseInt(document.getElementById('f-inscripcion').value);
-    const monto = parseFloat(document.getElementById('f-monto').value);
-    const metodo_pago = document.getElementById('f-metodo').value;
-    if (!monto||monto<=0) return toast('Monto inválido','error');
-    const r = await apiFetch('/pagos',{method:'POST',body:{inscripcion_id,monto,metodo_pago}});
-    if (r) { toast('Pago registrado','success'); closeModal(); loadPagos(); loadDashboard(); }
+  const inscripcion_id = parseInt(document.getElementById('f-inscripcion').value);
+  const monto = parseFloat(document.getElementById('f-monto').value);
+  const metodo_pago = document.getElementById('f-metodo').value;
+  if (!inscripcion_id) return toast('Seleccioná una inscripción', 'error');
+  if (!monto || monto <= 0) return toast('Ingresá un monto válido', 'error');
+  const r = await apiFetch('/pagos', { method: 'POST', body: { inscripcion_id, monto, metodo_pago } });
+  if (r) { toast('Pago registrado', 'success'); closeModal(); await loadPagos(); loadDashboard(); }
 }
 
 // ── UTILS ─────────────────────────────────────────
 function fmtDate(d) {
-    if (!d) return '—';
-    const dt = new Date(d);
-    return isNaN(dt) ? d : dt.toLocaleDateString('es-AR');
+  if (!d) return '—';
+  const dt = new Date(d);
+  return isNaN(dt) ? d : dt.toLocaleDateString('es-AR');
 }
 
-function toast(msg, type='success') {
-    const el = document.getElementById('toast');
-    el.textContent=msg; el.className='show '+type;
-    setTimeout(()=>el.className='',3000);
+function fmtMes(d) {
+  if (!d) return '—';
+  const dt = new Date(d);
+  return isNaN(dt) ? d : dt.toLocaleDateString('es-AR', { year: 'numeric', month: 'long' });
 }
 
-// ── INIT ──────────────────────────────────────────
-if (accessToken) {
-document.getElementById('user-label').textContent = 'usuario';
-showApp();
-} else {
-  document.getElementById('page-login').style.display = 'flex';
-  document.getElementById('page-login').classList.add('active');
+function esc(s) { return String(s).replace(/"/g, '&quot;'); }
+
+function toast(msg, type = 'success') {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.className = 'show ' + type;
+  setTimeout(() => el.className = '', 3000);
 }
+
+init();
 </script>
 </body>
 </html>
