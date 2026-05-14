@@ -6,7 +6,7 @@ const pagosRoutes = require("./routes/pagos.routes");
 const reportesRoutes = require("./routes/reportes.routes");
 
 app.use(cors({
-  origin: "*",  // en producción podés restringir al dominio real
+    origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"]
 }));

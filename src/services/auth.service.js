@@ -1,6 +1,6 @@
 
 const pool = require("../config/db");
-const { hashPassword, comparePassword } = require ("../utils/hash");
+const { hashPassword, comparePassword } = require ("../../dist/utils/hash");
 const AppError = require("../utils/AppError");
 const{ generateAccessToken, generateRefreshToken }= require("../utils/token");
 const jwt = require("jsonwebtoken");
